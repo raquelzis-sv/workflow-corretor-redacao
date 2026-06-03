@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pontos de Interesse da Correção",
+  "type": "object",
+  "properties": {
+    "redacao_id": {
+      "type": "string",
+      "description": "Identificador único da redação"
+    },
+    "pontos_interesse": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "desvio_ortografico",
+              "desvio_sintatico",
+              "falha_coesao",
+              "fuga_tema",
+              "argumento_excelente",
+              "repertorio_legitimado"
+            ]
+          },
+          "trecho": {
+            "type": "string",
+            "description": "O recorte exato do texto onde ocorreu o desvio ou destaque"
+          },
+          "comentario": {
+            "type": "string",
+            "description": "Explicação pedagógica sobre o motivo da marcação"
+          },
+          "gravidade": {
+            "type": "string",
+            "enum": ["positiva", "leve", "moderada", "grave", "anulacao"]
+          }
+        },
+        "required": ["tipo", "trecho", "comentario", "gravidade"]
+      }
+    }
+  },
+  "required": ["redacao_id", "pontos_interesse"]
+}

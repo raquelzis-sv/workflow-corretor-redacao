@@ -1,0 +1,94 @@
+competencias:
+  - id: C1
+    nome: "Demonstrar domínio da modalidade escrita formal da língua portuguesa"
+    niveis:
+      - nota: 0
+        descricao: "Demonstra desconhecimento da modalidade escrita formal da língua portuguesa."
+      - nota: 40
+        descricao: "Demonstra domínio precário da modalidade escrita formal da língua portuguesa, de forma sistemática, com diversificados e frequentes desvios gramaticais, de escolha de registro e de convenções da escrita."
+      - nota: 80
+        descricao: "Demonstra domínio insuficiente da modalidade escrita formal da língua portuguesa, com muitos desvios gramaticais, de escolha de registro e de convenções da escrita."
+      - nota: 120
+        descricao: "Demonstra domínio mediano da modalidade escrita formal da língua portuguesa e de escolha de registro, com alguns desvios gramaticais e de convenções da escrita."
+      - nota: 160
+        descricao: "Demonstra bom domínio da modalidade escrita formal da língua portuguesa e de escolha de registro, com poucos desvios gramaticais e de convenções da escrita."
+      - nota: 200
+        descricao: "Demonstra excelente domínio da modalidade escrita formal da língua portuguesa e de escolha de registro. Desvios gramaticais ou de convenções da escrita serão aceitos somente como excepcionalidade e quando não caracterizarem reincidência."
+
+  - id: C2
+    nome: "Compreender a proposta de redação e aplicar conceitos das várias áreas de conhecimento para desenvolver o tema dentro dos limites estruturais do texto dissertativo-argumentativo em prosa"
+    niveis:
+      - nota: 0
+        descricao: "Fuga ao tema/não atendimento à estrutura dissertativo-argumentativa. Nestes casos a redação recebe nota 0 (zero) e é anulada."
+      - nota: 40
+        descricao: "Apresenta o assunto, tangenciando o tema, ou demonstra domínio precário do texto dissertativo-argumentativo, com traços constantes de outros tipos textuais."
+      - nota: 80
+        descricao: "Desenvolve o tema recorrendo à cópia de trechos dos textos motivadores ou apresenta domínio insuficiente do texto dissertativo-argumentativo, não atendendo à estrutura com proposição, argumentação e conclusão."
+      - nota: 120
+        descricao: "Desenvolve o tema por meio de argumentação previsível e apresenta domínio mediano do texto dissertativo-argumentativo, com proposição, argumentação e conclusão."
+      - nota: 160
+        descricao: "Desenvolve o tema por meio de argumentação consistente e apresenta bom domínio do texto dissertativo-argumentativo, com proposição, argumentação e conclusão."
+      - nota: 200
+        descricao: "Desenvolve o tema por meio de argumentação consistente, a partir de um repertório sociocultural produtivo, e apresenta excelente domínio do texto dissertativo-argumentativo."
+
+  - id: C3
+    nome: "Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos em defesa de um ponto de vista"
+    niveis:
+      - nota: 0
+        descricao: "Apresenta informações, fatos e opiniões não relacionados ao tema e sem defesa de um ponto de vista."
+      - nota: 40
+        descricao: "Apresenta informações, fatos e opiniões pouco relacionados ao tema ou incoerentes e sem defesa de um ponto de vista."
+      - nota: 80
+        descricao: "Apresenta informações, fatos e opiniões relacionados ao tema, mas desorganizados ou contraditórios e limitados aos argumentos dos textos motivadores, em defesa de um ponto de vista."
+      - nota: 120
+        descricao: "Apresenta informações, fatos e opiniões relacionados ao tema, limitados aos argumentos dos textos motivadores e pouco organizados, em defesa de um ponto de vista."
+      - nota: 160
+        descricao: "Apresenta informações, fatos e opiniões relacionados ao tema, de forma organizada, com indícios de autoria, em defesa de um ponto de vista."
+      - nota: 200
+        descricao: "Apresenta informações, fatos e opiniões relacionados ao tema proposto, de forma consistente e organizada, configurando autoria, em defesa de um ponto de vista."
+
+  - id: C4
+    nome: "Demonstrar conhecimento dos mecanismos linguísticos necessários para a construção da argumentação"
+    niveis:
+      - nota: 0
+        descricao: "Não articula as informações."
+      - nota: 40
+        descricao: "Articula as partes do texto de forma precária."
+      - nota: 80
+        descricao: "Articula as partes do texto, de forma insuficiente, com muitas inadequações, e apresenta repertório limitado de recursos coesivos."
+      - nota: 120
+        descricao: "Articula as partes do texto, de forma mediana, com inadequações, e apresenta repertório pouco diversificado de recursos coesivos."
+      - nota: 160
+        descricao: "Articula as partes do texto, com poucas inadequações, e apresenta repertório diversificado de recursos coesivos."
+      - nota: 200
+        descricao: "Articula bem as partes do texto e apresenta repertório diversificado de recursos coesivos."
+
+  - id: C5
+    nome: "Elaborar proposta de intervenção para o problema abordado, respeitando os direitos humanos"
+    niveis:
+      - nota: 0
+        descricao: "Não apresenta proposta de intervenção ou apresenta proposta não relacionada ao tema ou ao assunto."
+      - nota: 40
+        descricao: "Apresenta proposta de intervenção vaga, precária ou relacionada apenas ao assunto."
+      - nota: 80
+        descricao: "Elabora, de forma insuficiente, proposta de intervenção relacionada ao tema, ou não articulada com a discussão desenvolvida no texto."
+      - nota: 120
+        descricao: "Elabora, de forma mediana, proposta de intervenção relacionada ao tema e articulada à discussão desenvolvida no texto."
+      - nota: 160
+        descricao: "Elabora bem proposta de intervenção relacionada ao tema e articulada à discussão desenvolvida no texto."
+      - nota: 200
+        descricao: "Elabora muito bem proposta de intervenção, detalhada, relacionada ao tema e articulada à discussão desenvolvida no texto."
+
+regras_gerais:
+  multiplo_obrigatorio: 40
+  nota_maxima: 1000
+  anulacao:
+    - "fuga total ao tema"
+    - "não obediência ao tipo dissertativo-argumentativo"
+    - "ausência de texto escrito na Folha de Redação (Em Branco)"
+    - "extensão de até 7 (sete) linhas manuscritas (Texto insuficiente)"
+    - "impropérios, desenhos e outras formas propositais de anulação"
+    - "parte deliberadamente desconectada do tema proposto"
+    - "nome, assinatura, rubrica fora do espaço destinado"
+    - "texto predominantemente ou integralmente em língua estrangeira"
+    - "texto ilegível"

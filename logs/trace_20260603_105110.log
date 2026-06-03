@@ -1,0 +1,7 @@
+[2026-06-03 10:51:10] DEBUG Tracer initialized for run_id=20260603_105110
+[2026-06-03 10:51:10] DEBUG Texto extraído com sucesso
+[2026-06-03 10:51:10] DEBUG Contagem de linhas: 36
+[2026-06-03 10:51:10] DEBUG LLM simulation completed
+[2026-06-03 10:51:10] DEBUG Cálculo de notas concluído
+[2026-06-03 10:51:10] INFO Relatório Markdown gerado: C:\Users\raque\Documents\projetos\aula_ia\workflow-corretor-redacao\relatorios\correcao_redacao_nota_alta_20260603_105110.md
+[2026-06-03 10:51:10] INFO Process trace saved to C:\Users\raque\Documents\projetos\aula_ia\workflow-corretor-redacao\logs\trace_105110.json

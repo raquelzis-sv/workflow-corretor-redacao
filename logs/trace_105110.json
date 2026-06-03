@@ -1,0 +1,26 @@
+{
+  "run_id": "105110",
+  "steps": [
+    {
+      "name": "extract_text",
+      "status": "success"
+    },
+    {
+      "name": "pre_validation",
+      "lines": 36
+    },
+    {
+      "name": "llm_simulation",
+      "status": "completed"
+    },
+    {
+      "name": "score_calculation",
+      "status": "completed"
+    },
+    {
+      "name": "report_generation",
+      "status": "completed",
+      "path": "C:\\Users\\raque\\Documents\\projetos\\aula_ia\\workflow-corretor-redacao\\relatorios\\correcao_redacao_nota_alta_20260603_105110.md"
+    }
+  ]
+}
