@@ -1,0 +1,186 @@
+# Workflow operacional — Correção de redações ENEM
+# Versão espelhada em docs/workflow.md (manter coerência entre os dois arquivos)
+
+workflow:
+  id: correcao-redacao-enem
+  nome: "Correção automatizada de redações (ENEM)"
+  versao: "1.1.0"
+  objetivo: >
+    Receber redação (texto, PDF ou imagem) e tema, extrair o texto, avaliar pelas
+    cinco competências do ENEM com apoio de IA local (Ollama/Llama 3.2), validar
+    notas deterministicamente e gerar relatório rastreável.
+
+# Estágio 1 — Contexto operacional (POP)
+pop:
+  dominio: "Correção de redações dissertativo-argumentativas no padrão ENEM"
+  atores:
+    - id: estudante
+      papel: "Envia redação manuscrita/digital e o tema da prova"
+    - id: professor_corretor
+      papel: "Revisa critérios, valida notas e feedback (co-piloto da IA)"
+    - id: orquestrador
+      papel: "Sistema Python (process_redacao.py) — executa etapas e registra logs"
+    - id: ia_avaliadora
+      papel: "LLM via Ollama — extrai pontos de interesse e sugere notas/comentários"
+    - id: ferramenta_calculo
+      papel: "Script calculadora_notas.py — valida escala e soma (tool determinística)"
+  processo_manual_atual:
+    - "Professor recebe folha/PDF/foto da redação e o tema da prova."
+    - "Lê o texto integral, marca desvios e argumentos no papel ou editor."
+    - "Consulta matriz ENEM (5 competências, níveis de 0 a 200 em degraus de 40)."
+    - "Atribui nota por competência, soma manualmente e registra justificativas."
+    - "Devolve feedback ao aluno (15–20 min por redação em média)."
+  ganho_com_automacao: >
+    Padronizar critérios via contrato.yaml, acelerar triagem, garantir soma correta
+    e produzir relatório + rastreio para revisão humana em ~3 min.
+
+inputs:
+  - id: arquivo_redacao
+    obrigatorio: true
+    formatos: [".txt", ".md", ".pdf", ".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".webp"]
+    descricao: "Arquivo da redação do estudante"
+  - id: tema
+    obrigatorio: true
+    tipo: string
+    descricao: "Tema da proposta de redação"
+  - id: contrato
+    obrigatorio: false
+    padrao: "contracts/contrato.yaml"
+    descricao: "Critérios e níveis ENEM"
+
+outputs:
+  - id: relatorio_md
+    caminho: "relatorios/correcao_{arquivo}_{timestamp}.md"
+    descricao: "Notas, comentários, pontos de interesse e texto extraído"
+  - id: trace_json
+    caminho: "logs/trace_{run_id}.json"
+    descricao: "Histórico estruturado de etapas"
+  - id: trace_log
+    caminho: "logs/trace_{run_id}.log"
+    descricao: "Log textual da execução"
+
+contratos:
+  criterios: "contracts/contrato.yaml"
+  schema_pontos: "schemas/pontos_interesse.json"
+
+steps:
+  - id: extract_text
+    ordem: 1
+    responsavel: orquestrador
+    modulo: scripts/input_handler.py
+    depends_on: []
+    inputs:
+      arquivo_redacao: "{arquivo_redacao}"
+    outputs:
+      texto_extraido: string
+    tools:
+      - name: extract_text
+        script: scripts/input_handler.py
+        ramificacoes:
+          pdf: scripts/pdf_extractor.py
+          imagem: scripts/ocr_engine.py
+          texto: leitura_utf8
+    on_error: abortar
+
+  - id: pre_validation
+    ordem: 2
+    responsavel: orquestrador
+    modulo: scripts/process_redacao.py
+    depends_on: [extract_text]
+    inputs:
+      texto_extraido: "{texto_extraido}"
+    outputs:
+      contagem_linhas: integer
+      motivo_anulacao: string|null
+    decisions:
+      - se: "contagem_linhas < 7"
+        entao: "motivo_anulacao = texto insuficiente (pula IA)"
+        proximo: score_calculation
+
+  - id: llm_extraction
+    ordem: 3
+    responsavel: ia_avaliadora
+    modulo: scripts/llm_avaliador.py
+    depends_on: [pre_validation]
+    condicao: "motivo_anulacao == null"
+    inputs:
+      texto_extraido: "{texto_extraido}"
+      tema: "{tema}"
+      schema: schemas/pontos_interesse.json
+    outputs:
+      pontos_interesse: object
+    tools:
+      - name: ollama_chat
+        provider: ollama
+        model: "${OLLAMA_MODEL:-llama3.2}"
+        format: json
+    validations:
+      - tipo: json_schema
+        schema: schemas/pontos_interesse.json
+
+  - id: llm_evaluation
+    ordem: 4
+    responsavel: ia_avaliadora
+    modulo: scripts/llm_avaliador.py
+    depends_on: [llm_extraction]
+    condicao: "motivo_anulacao == null"
+    inputs:
+      texto_extraido: "{texto_extraido}"
+      tema: "{tema}"
+      pontos_interesse: "{pontos_interesse}"
+      contrato: contracts/contrato.yaml
+    outputs:
+      notas: "object[C1..C5]"
+      comentarios: "object[C1..C5]"
+      motivo_anulacao_llm: string|null
+    tools:
+      - name: ollama_chat
+        provider: ollama
+        model: "${OLLAMA_MODEL:-llama3.2}"
+        format: json
+    retry:
+      max: 1
+      quando: "calculadora retorna status erro (nota inválida)"
+
+  - id: score_calculation
+    ordem: 5
+    responsavel: ferramenta_calculo
+    modulo: scripts/calculadora_notas.py
+    depends_on: [pre_validation, llm_evaluation]
+    inputs:
+      notas: "{notas}"
+      motivo_anulacao: "{motivo_anulacao || motivo_anulacao_llm}"
+    outputs:
+      status: "[sucesso|anulada|erro]"
+      nota_final: integer
+      detalhes: object
+    tools:
+      - name: calcular_nota_final
+        script: scripts/calculadora_notas.py
+        tipo: python_function
+        descricao: >
+          Tool calling determinístico: valida múltiplos de 40, soma até 1000,
+          zera se houver anulação. Invocado pelo orquestrador após a IA sugerir notas.
+
+  - id: report_generation
+    ordem: 6
+    responsavel: orquestrador
+    modulo: scripts/process_redacao.py
+    depends_on: [score_calculation]
+    outputs:
+      relatorio_md: "{relatorio_md}"
+
+  - id: trace_persist
+    ordem: 7
+    responsavel: orquestrador
+    modulo: scripts/tracing.py
+    depends_on: [report_generation]
+    outputs:
+      trace_json: "{trace_json}"
+      trace_log: "{trace_log}"
+
+execucao:
+  entrada_cli: "python -m scripts.process_redacao <arquivo> [tema]"
+  fallback:
+    - condicao: "Ollama indisponível ou OLLAMA_DISABLED=1"
+      acao: "llm_extraction e llm_evaluation em modo simulacao"

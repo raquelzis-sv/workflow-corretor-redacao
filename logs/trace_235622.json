@@ -1,0 +1,38 @@
+{
+  "run_id": "235622",
+  "steps": [
+    {
+      "name": "extract_text",
+      "status": "success"
+    },
+    {
+      "name": "pre_validation",
+      "lines": 36
+    },
+    {
+      "name": "llm_extraction",
+      "modo": "ollama",
+      "pontos_count": 13
+    },
+    {
+      "name": "llm_evaluation",
+      "modo": "ollama",
+      "notas": {
+        "C1": 200,
+        "C2": 160,
+        "C3": 120,
+        "C4": 80,
+        "C5": 40
+      }
+    },
+    {
+      "name": "score_calculation",
+      "status": "completed"
+    },
+    {
+      "name": "report_generation",
+      "status": "completed",
+      "path": "C:\\Users\\raque\\Documents\\projetos\\aula_ia\\workflow-corretor-redacao\\relatorios\\correcao_redacao_nota_alta_20260604_235756.md"
+    }
+  ]
+}

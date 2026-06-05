@@ -83,9 +83,14 @@ graph TD
 
 ---
 
-### 8. Próximas Etapas e Entregáveis Técnicos
+### 8. Entregáveis Técnicos (status)
 
-1.  Criar o arquivo `contrato.yaml` parametrizando a avaliação (5 competências do ENEM).
-2.  Criar o arquivo `pontos_interesse.json` contendo a estrutura de desvios e destaques.
-3.  Desenvolver o script `calculadora_notas.py` com as regras de cálculo e validação.
-4.  Escrever o arquivo `workflow.md` contendo o desenho da arquitetura, os prompts estruturados e a documentação de chamadas de IA.
+| Entregável | Status |
+|------------|--------|
+| `contracts/contrato.yaml` | Concluído |
+| `schemas/pontos_interesse.json` | Concluído |
+| `scripts/calculadora_notas.py` | Concluído |
+| `scripts/llm_avaliador.py` (Ollama / Llama 3.2) | Concluído |
+| `docs/workflow.md` + `workflow.yaml` | Concluído (documentação operacional + estruturada) |
+| Validação JSON Schema (`scripts/validacao_schema.py`) | Concluído |
+| Rastreio (`logs/`, `relatorios/`) | Concluído |

@@ -11,7 +11,8 @@ Sistema automatizado de avaliação de redações inspirado no modelo **ENEM**. 
 ├── README.md                            # Visão geral do projeto (este arquivo)
 ├── prd.md                               # Documento de Requisitos de Produto
 ├── requirements.txt                     # Dependências Python
-├── cartilha_enem_2025.pdf               # Material de referência ENEM
+├── .env.example                         # Variáveis Ollama (copiar para .env)
+├── cartilha_enem_2025.pdf               # Material de referência ENEM (opcional)
 │
 ├── contracts/
 │   └── contrato.yaml                    # Competências e níveis de avaliação
@@ -21,6 +22,7 @@ Sistema automatizado de avaliação de redações inspirado no modelo **ENEM**. 
 │
 ├── docs/
 │   └── workflow.md                      # Documentação do pipeline e arquitetura
+│   └── workflow.yaml                    # Workflow estruturado (etapas, I/O, tools, POP)
 │
 ├── scripts/
 │   ├── process_redacao.py               # 🚀 Orquestrador principal do workflow
@@ -28,10 +30,11 @@ Sistema automatizado de avaliação de redações inspirado no modelo **ENEM**. 
 │   ├── pdf_extractor.py                 # Extração de texto via pdfplumber
 │   ├── ocr_engine.py                    # Digitalização de imagens via Tesseract OCR
 │   ├── calculadora_notas.py             # Cálculo e validação determinística de notas
+│   ├── llm_avaliador.py                 # Avaliação via Ollama (Llama 3.2)
 │   └── tracing.py                       # Rastreio e logging do processo
 │
 ├── exemplos/                            # Arquivos de exemplo para testes
-│   ├── redacao_nota_alta.txt            # Redação de exemplo (texto plano)
+│   ├── redacao_nota_alta.txt            # Redação completa (texto plano)
 │   ├── redacao_curta.txt                # Redação curta (testa anulação automática)
 │   ├── redacao_2.JPG                    # Redação manuscrita (testa OCR)
 │   ├── redacao_3.pdf                    # Redação em PDF digital
@@ -56,7 +59,7 @@ O workflow segue **7 etapas** sequenciais:
 | 1 | **Ingestão** — Recebe o arquivo (PDF, imagem ou texto) | `input_handler.py` |
 | 2 | **Extração de Texto** — Converte o conteúdo para texto puro | `pdf_extractor.py` / `ocr_engine.py` |
 | 3 | **Pré-validação** — Verifica regras de negócio (ex: mínimo de 7 linhas) | `process_redacao.py` |
-| 4 | **Análise da IA** — Identifica Pontos de Interesse e avalia competências | LLM + `contrato.yaml` |
+| 4 | **Análise da IA** — Pontos de interesse + notas por competência | `llm_avaliador.py` (Ollama / `llama3.2`) + `contrato.yaml` |
 | 5 | **Cálculo de Notas** — Soma, valida e aplica regras de anulação | `calculadora_notas.py` |
 | 6 | **Relatório Markdown** — Gera arquivo `.md` com resultado completo | `process_redacao.py` |
 | 7 | **Rastreio do Processo** — Salva log e trace JSON de cada etapa | `tracing.py` |
@@ -87,7 +90,19 @@ O workflow segue **7 etapas** sequenciais:
 pip install -r requirements.txt
 ```
 
-### 2. Tesseract OCR (necessário apenas para entrada por imagem)
+### 2. Ollama + Llama 3.2 (avaliação por IA)
+
+| Passo | Comando / ação |
+|-------|----------------|
+| Instalar Ollama | [https://ollama.com](https://ollama.com) (já instalado no Windows, se `ollama` funcionar no terminal) |
+| Baixar o modelo | `ollama pull llama3.2` |
+| Variáveis (opcional) | Copie `.env.example` para `.env` ou exporte `OLLAMA_MODEL=llama3.2` |
+
+O servidor Ollama deve estar em execução. Sem ele, o pipeline usa **modo simulado** (notas fixas) e avisa no console.
+
+Para desativar a IA local: `OLLAMA_DISABLED=1`.
+
+### 3. Tesseract OCR (necessário apenas para entrada por imagem)
 
 | Sistema | Comando |
 |---------|---------|
@@ -116,7 +131,7 @@ python -m scripts.process_redacao exemplos/redacao_nota_alta.txt "Desafios para 
 # Redação em PDF
 python -m scripts.process_redacao exemplos/redacao_3.pdf "Invisibilidade e registro civil"
 
-# Redação manuscrita (imagem)
+# Redação manuscrita (imagem — requer Tesseract)
 python -m scripts.process_redacao exemplos/redacao_2.JPG "A importância da leitura na era digital"
 
 # Redação curta (testa anulação automática)
@@ -148,6 +163,7 @@ O workflow gera automaticamente um relatório `.md` na pasta `relatorios/` conte
 | Documento | Descrição |
 |-----------|-----------|
 | [prd.md](prd.md) | Requisitos de Produto — objetivos, personas, requisitos funcionais e não-funcionais |
-| [docs/workflow.md](docs/workflow.md) | Arquitetura do pipeline, diagramas de fluxo e prompts |
+| [workflow.yaml](workflow.yaml) | Workflow em YAML (etapas, dependências, tools, POP) |
+| [docs/workflow.md](docs/workflow.md) | Workflow em Markdown (espelho do YAML + exemplos de payload) |
 | [contracts/contrato.yaml](contracts/contrato.yaml) | Definição das 5 competências e seus níveis de avaliação |
 | [schemas/pontos_interesse.json](schemas/pontos_interesse.json) | Schema JSON para extração de desvios e acertos |
