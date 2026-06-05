@@ -126,13 +126,13 @@ python -m scripts.process_redacao <caminho_do_arquivo> "[Tema da Redação]"
 
 ```bash
 # Redação em texto plano
-python -m scripts.process_redacao exemplos/redacao_nota_alta.txt "Desafios para a formação educacional de surdos no Brasil"
+python -m scripts.process_redacao exemplos/redacao_nota_alta.txt tema.txt
 
 # Redação em PDF
-python -m scripts.process_redacao exemplos/redacao_3.pdf "Invisibilidade e registro civil"
+python -m scripts.process_redacao exemplos/redacao_3.pdf tema_2.txt
 
 # Redação manuscrita (imagem — requer Tesseract)
-python -m scripts.process_redacao exemplos/redacao_2.JPG "A importância da leitura na era digital"
+python -m scripts.process_redacao exemplos/redacao_2.JPG tema_2.txt
 
 # Redação curta (testa anulação automática)
 python -m scripts.process_redacao exemplos/redacao_curta.txt
@@ -163,7 +163,7 @@ O workflow gera automaticamente um relatório `.md` na pasta `relatorios/` conte
 | Documento | Descrição |
 |-----------|-----------|
 | [prd.md](prd.md) | Requisitos de Produto — objetivos, personas, requisitos funcionais e não-funcionais |
-| [workflow.yaml](workflow.yaml) | Workflow em YAML (etapas, dependências, tools, POP) |
+| [docs/workflow.yaml](docs/workflow.yaml) | Workflow em YAML (etapas, dependências, tools, POP) |
 | [docs/workflow.md](docs/workflow.md) | Workflow em Markdown (espelho do YAML + exemplos de payload) |
 | [contracts/contrato.yaml](contracts/contrato.yaml) | Definição das 5 competências e seus níveis de avaliação |
 | [schemas/pontos_interesse.json](schemas/pontos_interesse.json) | Schema JSON para extração de desvios e acertos |
