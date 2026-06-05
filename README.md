@@ -52,17 +52,26 @@ Sistema automatizado de avaliação de redações inspirado no modelo **ENEM**. 
 
 ## 🚀 Como Funciona
 
-O workflow segue **7 etapas** sequenciais:
+O sistema possui duas formas principais de orquestração:
+
+### 1. Workflow Agentic (Recomendado)
+O fluxo é gerenciado ativamente por um **Agente de IA** instruído pelo arquivo `.agents/workflows/corretor.md`. Neste modelo, a IA:
+1. Faz a leitura inteligente e extração do texto (via tools).
+2. Aciona o Ollama (`llm_avaliador.py`) como uma *tool call* para extrair notas e desvios.
+3. Aciona a calculadora matemática (`calculadora_notas.py`) como uma *tool call* para consolidar a nota com 100% de precisão lógica.
+4. Redige e estrutura o relatório Markdown final.
+
+### 2. Workflow Automático Local
+Caso o professor deseje rodar a automação isoladamente no terminal (sem chat), a orquestração é feita em Python:
 
 | Etapa | Descrição | Módulo |
 |:-----:|-----------|--------|
 | 1 | **Ingestão** — Recebe o arquivo (PDF, imagem ou texto) | `input_handler.py` |
-| 2 | **Extração de Texto** — Converte o conteúdo para texto puro | `pdf_extractor.py` / `ocr_engine.py` |
-| 3 | **Pré-validação** — Verifica regras de negócio (ex: mínimo de 7 linhas) | `process_redacao.py` |
-| 4 | **Análise da IA** — Pontos de interesse + notas por competência | `llm_avaliador.py` (Ollama / `llama3.2`) + `contrato.yaml` |
-| 5 | **Cálculo de Notas** — Soma, valida e aplica regras de anulação | `calculadora_notas.py` |
-| 6 | **Relatório Markdown** — Gera arquivo `.md` com resultado completo | `process_redacao.py` |
-| 7 | **Rastreio do Processo** — Salva log e trace JSON de cada etapa | `tracing.py` |
+| 2 | **Pré-validação** — Verifica regras de negócio (ex: mínimo de 7 linhas) | `process_redacao.py` |
+| 3 | **Análise da IA** — Pontos de interesse + notas por competência | `llm_avaliador.py` (Ollama / `llama3.2`) + `contrato.yaml` |
+| 4 | **Cálculo de Notas** — Soma, valida e aplica regras de anulação | `calculadora_notas.py` |
+| 5 | **Relatório Markdown** — Gera arquivo `.md` com resultado completo | `process_redacao.py` |
+| 6 | **Rastreio do Processo** — Salva log e trace JSON de cada etapa | `tracing.py` |
 
 ### Formatos de Entrada Suportados
 
@@ -116,26 +125,34 @@ Para desativar a IA local: `OLLAMA_DISABLED=1`.
 
 ## 💻 Como Executar
 
-### Comando principal
+Você pode executar o workflow localmente através do novo comando `corretor` (batch wrapper) ou via Python.
+
+### 1. Via Comando Principal (Batch Wrapper)
 
 ```bash
-python -m scripts.process_redacao <caminho_do_arquivo> "[Tema da Redação]"
+corretor <caminho_do_arquivo> "<tema_ou_caminho_do_tema>"
 ```
 
-### Exemplos
+### 2. Via Python
+
+```bash
+python -m scripts.corretor_cli <caminho_do_arquivo> "<tema>"
+```
+
+### Exemplos Práticos no Terminal
 
 ```bash
 # Redação em texto plano
-python -m scripts.process_redacao exemplos/redacao_nota_alta.txt tema.txt
+corretor exemplos/redacao_nota_alta.txt exemplos/tema.txt
 
 # Redação em PDF
-python -m scripts.process_redacao exemplos/redacao_3.pdf tema_2.txt
+corretor exemplos/redacao_3.pdf exemplos/tema_2.txt
 
 # Redação manuscrita (imagem — requer Tesseract)
-python -m scripts.process_redacao exemplos/redacao_2.JPG tema_2.txt
+corretor exemplos/redacao_2.JPG exemplos/tema_2.txt
 
 # Redação curta (testa anulação automática)
-python -m scripts.process_redacao exemplos/redacao_curta.txt
+corretor exemplos/redacao_curta.txt
 ```
 
 ### Executar testes
@@ -162,8 +179,7 @@ O workflow gera automaticamente um relatório `.md` na pasta `relatorios/` conte
 
 | Documento | Descrição |
 |-----------|-----------|
-| [prd.md](prd.md) | Requisitos de Produto — objetivos, personas, requisitos funcionais e não-funcionais |
-| [docs/workflow.yaml](docs/workflow.yaml) | Workflow em YAML (etapas, dependências, tools, POP) |
-| [docs/workflow.md](docs/workflow.md) | Workflow em Markdown (espelho do YAML + exemplos de payload) |
+| [prd.md](prd.md) | Requisitos de Produto — objetivos, personas e requisitos |
+| [.agents/workflows/corretor.md](.agents/workflows/corretor.md) | **Workflow Agentic** — Regras de orquestração para a IA |
 | [contracts/contrato.yaml](contracts/contrato.yaml) | Definição das 5 competências e seus níveis de avaliação |
 | [schemas/pontos_interesse.json](schemas/pontos_interesse.json) | Schema JSON para extração de desvios e acertos |

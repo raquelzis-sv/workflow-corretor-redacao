@@ -91,6 +91,7 @@ graph TD
 | `schemas/pontos_interesse.json` | Concluído |
 | `scripts/calculadora_notas.py` | Concluído |
 | `scripts/llm_avaliador.py` (Ollama / Llama 3.2) | Concluído |
-| `docs/workflow.md` + `workflow.yaml` | Concluído (documentação operacional + estruturada) |
+| `.agents/workflows/corretor.md` | Concluído (Workflow Agentic) |
+| `corretor.bat` / `corretor_cli.py` | Concluído (Wrappers CLI) |
 | Validação JSON Schema (`scripts/validacao_schema.py`) | Concluído |
 | Rastreio (`logs/`, `relatorios/`) | Concluído |

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+.venv/
+
+# Variáveis de Ambiente e Segredos
+.env
+.env.local
+
+# IDEs e OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Diretórios de Saída do Workflow Corretor
+relatorios/*
+!relatorios/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Arquivos Temporários do Agente
+scratch_*.py
+temp_*.json
+resultado_*.json
